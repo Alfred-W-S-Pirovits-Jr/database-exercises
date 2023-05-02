@@ -125,6 +125,24 @@ SELECT *
 	WHERE (product_size = 'medium' AND product_category_id = 1) 
 		OR product_qty_type = 'lbs';
         
-	
+	--  ORDER BY Clause
+    
+    USE farmers_market;
+     
+	SELECT *
+    FROM market_date_info
+    ORDER BY market_min_temp;  -- nulls come in first and default is ascending order
+    
+    SELECT *
+    FROM market_date_info
+    ORDER BY market_min_temp DESC; 
+    
+    -- We can sort by multiple columns
+	SELECT *
+    FROM market_date_info
+    ORDER BY market_min_temp DESC, market_max_temp ASC; 
+    
+    
+    
 	
    
