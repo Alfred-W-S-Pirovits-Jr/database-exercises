@@ -29,8 +29,12 @@ SHOW CREATE TABLE titles;
 --  Which table(s) do you think contain a string type column?
 -- departments, dept_emp, dept_manager, employees and titles
 
+-- I guess i did not answer this question and skipped over it Which tables do you think contain a date type column?
+-- dept_emp, dept_manager employees, salaries, title
+
 -- What is the relationship between the employees and the departments tables?
 -- They have no common fields
+
 
 --  Show the SQL that created the dept_manager table.  Write the sql it takes to show this as your exercise solution
 SHOW CREATE TABLE dept_manager;
