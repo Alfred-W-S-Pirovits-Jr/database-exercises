@@ -16,14 +16,17 @@ LIMIT 10;
 -- 3. Alselm Cappello, Utz Mandell, Bouchung Schreiter, Baocai Kushner, Petter Stroustrup
 SELECT birth_date, first_name, last_name, hire_date
 FROM employees
-WHERE hire_date LIKE '199%' AND birth_date LIKE '%12-25'
+WHERE hire_date LIKE '199%' 
+	AND birth_date LIKE '%12-25' -- formatting change
 ORDER BY hire_date
 LIMIT 5;
 
 -- 4.  p = page number l = limit o = offset
 --  p = o/l + 1
+-- class used (Page - 1) * Limit = Offset
 SELECT birth_date, first_name, last_name, hire_date
 FROM employees
-WHERE hire_date LIKE '199%' AND birth_date LIKE '%12-25'
+WHERE hire_date LIKE '199%' 
+	AND birth_date LIKE '%12-25' -- another formatting change
 ORDER BY hire_date
 LIMIT 5 OFFSET 45;
