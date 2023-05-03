@@ -47,5 +47,3 @@ SELECT CONCAT(SUBSTR(LOWER(first_name), 1, 1), SUBSTR(LOWER(last_name), 1, 4), '
 FROM employees
 LIMIT 10;  -- LOOK AT THE PUSH FROM TASHA!!
 
-
-
