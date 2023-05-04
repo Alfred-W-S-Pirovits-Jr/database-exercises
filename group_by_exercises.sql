@@ -11,9 +11,9 @@ DESCRIBE employees;
 -- 2. Seven
 SELECT DISTINCT title 
 FROM titles;
-
+	
 -- 3.  
-SELECT last_name
+SELECT last_name -- Do I need distinct?  NO
 FROM employees
 WHERE last_name LIKE 'e%e'
 GROUP BY last_name;
@@ -90,11 +90,38 @@ SHOW tables;
 
 DESCRIBE salaries;
 
--- historic average salary
+-- historic average salary does not account for how long the employee had the salaries.
 SELECT emp_no, AVG(salary) 
 FROM salaries
 GROUP BY emp_no;
 
--- count how many employees 
-SELECT *
-FROM dept_emp;
+-- count how many employees working currently in each department
+SELECT dept_no, COUNT(emp_no) n_employees_per_dept
+FROM dept_emp
+WHERE to_date NOT LIKE '9999-01-01'
+GROUP BY dept_no;
+
+SELECT * 
+FROM salaries;
+-- how many different salaries has an employee had 
+SELECT emp_no, COUNT(salary) n_different_salaries
+FROM salaries
+GROUP BY emp_no;
+
+-- FIND THE MAXIMUM, MINIMUM AND STANDARD DEVIATION SALARY FOR EACH EMPLOYEE
+SELECT emp_no, MAX(salary) AS max_salary, MIN(salary) AS min_salary, STDDEV(salary) AS sigma_salary
+FROM salaries
+GROUP BY emp_no;
+
+-- Find max salary for each employee wheer max_salary greater than $150,000
+SELECT emp_no, MAX(salary)
+FROM salaries
+GROUP BY emp_no
+HAVING MAX(salary) > 150000;
+
+-- Find the average salary for each employee where that average salary is between $80k and $90k
+SELECT emp_no, AVG(salary)
+FROM salaries
+GROUP BY emp_no
+HAVING AVG(salary) BETWEEN 80000 AND 90000
+ORDER BY AVG(salary);
