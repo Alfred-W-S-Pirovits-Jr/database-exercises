@@ -60,7 +60,7 @@ GROUP BY role_id;
 
 -- EMPLOYEES DATABASE
 
--- 1.
+-- 1. Done
 USE employees;
 
 SHOW tables;
@@ -94,7 +94,8 @@ ORDER BY d.dept_name; -- , CONCAT(e.first_name, ' ', e.last_name); Concat not ne
 -- WHERE s.to_date = '9999-01-01'
 -- GROUP BY d.dept_name, CONCAT(first_name, ' ', last_name)
 
-
+-- USING look up Tashas solution using using.  --------------------------
+-- JOIN dept_manager AS dm USING (dept_no) -- if dept_no is exactly the same name in both tables
 
 -- 3.  
 SELECT *
@@ -111,8 +112,8 @@ FROM employees;
 -- join dept_manager to employees by emp_no
 -- choose female managers
 
-SELECT d.dept_name AS 'Department Name', CONCAT(e.first_name, ' ', e.last_name) AS 'Manager Name'
-FROM departments d
+SELECT d.dept_name AS 'Department Name', CONCAT(e.first_name, ' ', e.last_name) AS 'Manager Name' -- dont nee the d. or e. still works
+FROM departments d																					-- WHY?
 JOIN dept_manager dm
 ON d.dept_no = dm.dept_no
 JOIN employees e
@@ -158,7 +159,7 @@ ORDER BY d.dept_name;
 -- 6.   Join departments with dep_emp by dept_no
 -- Group by dept_no
 -- Where current employee
-SELECT d.dept_no, d.dept_name, COUNT(d.dept_name)
+SELECT d.dept_no, d.dept_name, COUNT(d.dept_name) AS num_employees -- forgot to use Alias for last column
 FROM departments d
 JOIN dept_emp de
 ON d.dept_no = de.dept_no
@@ -169,7 +170,7 @@ ORDER BY d.dept_no;
 
 -- 7.  current salaries join dept_emp to salaries current salaries (left?)
 -- group by department and I have to join departments as well
-SELECT d.dept_name, AVG(s.salary) -- TOMORROW SEE IF I CAN DO WITHOUT LIMIT
+SELECT d.dept_name, AVG(s.salary) AS average_salary -- Forgot to alias -- TOMORROW SEE IF I CAN DO WITHOUT LIMIT
 FROM departments d
 JOIN dept_emp de
 ON d.dept_no = de.dept_no
@@ -224,7 +225,7 @@ ORDER BY ROUND(AVG(s.salary)) DESC;
 -- 11. Join employees to dept_emp by emp_no then to dept_manager by emp_no then to departments by dept_no
 --  isolate current employees by salary and dept_emp to dates
 
-SELECT CONCAT(e.first_name, ' ', e.last_name) AS 'Employee Name', d.dept_name AS 'Department Name', dm.dept_no
+SELECT CONCAT(e.first_name, ' ', e.last_name) AS 'Employee Name', d.dept_name AS 'Department Name'-- , dm.dept_no
 FROM employees e
 LEFT JOIN dept_emp de
 ON e.emp_no = de.emp_no
@@ -233,7 +234,7 @@ ON de.emp_no = dm.emp_no
 LEFT JOIN departments d
 ON dm.dept_no = d.dept_no
 WHERE de.to_date = '9999-01-01'
-ORDER BY e.emp_no;-- OR dm.to_date ='9999-01-01');
+ORDER BY de.dept_no DESC;-- OR dm.to_date ='9999-01-01');
 
 DESCRIBE departments;
 DESCRIBE dept_emp;
@@ -245,4 +246,4 @@ DESCRIBE roles;
 
 SELECT *
 FROM dept_emp
-WHERE to_date = '9999-01-01'
+-- WHERE emp_no = 100038;
