@@ -121,13 +121,7 @@ WHERE dm.to_date = '9999-01-01' AND e.gender = 'F'
 ORDER BY d.dept_name; -- DOES ORDER BY HAVE THE SAME LIMITATIONS AS GROUP BY FOR SELECT
 
 -- 4. 
-DESCRIBE departments;
-DESCRIBE dept_emp;
-DESCRIBE dept_manager;
-DESCRIBE employees;
-DESCRIBE salaries;
-DESCRIBE titles;
-DESCRIBE roles;
+
 -- join department with dept_emp by dept_no
 -- Join dept_emp and titles by emp_no
 
@@ -137,9 +131,9 @@ JOIN dept_emp de
 ON d.dept_no = de.dept_no
 JOIN titles t
 ON de.emp_no = t.emp_no
-JOIN salaries s
-ON t.emp_no = s.emp_no
-WHERE d.dept_no = 'd009' AND de.to_date = '9999-01-01'-- d009 is Customer Service Department Number
+-- JOIN salaries s -- WHY DOES INNER JOINING SALARIES EXPLODE THE COUNT?
+-- ON t.emp_no = s.emp_no
+WHERE d.dept_no = 'd009' AND t.to_date = '9999-01-01' AND de.to_date = '9999-01-01' -- d009 is Customer Service Department Number
 GROUP BY t.title
 ORDER BY t.title;
 
@@ -230,13 +224,25 @@ ORDER BY ROUND(AVG(s.salary)) DESC;
 -- 11. Join employees to dept_emp by emp_no then to dept_manager by emp_no then to departments by dept_no
 --  isolate current employees by salary and dept_emp to dates
 
-SELECT CONCAT(e.first_name, ' ', e.last_name) AS 'Employee Name', d.dept_name AS 'Department Name'
+SELECT CONCAT(e.first_name, ' ', e.last_name) AS 'Employee Name', d.dept_name AS 'Department Name', dm.dept_no
 FROM employees e
 LEFT JOIN dept_emp de
 ON e.emp_no = de.emp_no
 LEFT JOIN dept_manager dm
 ON de.emp_no = dm.emp_no
 LEFT JOIN departments d
-ON dm.dept_no = d.dept_n
-WHERE de.to_date = '9999-01-01';-- OR dm.to_date ='9999-01-01');
+ON dm.dept_no = d.dept_no
+WHERE de.to_date = '9999-01-01'
+ORDER BY e.emp_no;-- OR dm.to_date ='9999-01-01');
 
+DESCRIBE departments;
+DESCRIBE dept_emp;
+DESCRIBE dept_manager;
+DESCRIBE employees;
+DESCRIBE salaries;
+DESCRIBE titles;
+DESCRIBE roles;
+
+SELECT *
+FROM dept_emp
+WHERE to_date = '9999-01-01'
