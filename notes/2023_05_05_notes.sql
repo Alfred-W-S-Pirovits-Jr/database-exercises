@@ -80,7 +80,7 @@ WHERE customer_zip = 22821;
 
 SELECT *
 FROM customer
-JOIN customer_purchases USING (customer_id)
+JOIN customer_purchases USING (customer_id);
 WHERE customer.customer_zip = 22821;
 
 SELECT *
@@ -101,4 +101,76 @@ JOIN (
 		SELECT *
 		FROM customer
 		WHERE customer_zip = 22821
-	) AS c ON cp.customer_id = c.customer_id
+	) AS c ON cp.customer_id = c.customer_id;
+    
+USE farmers_market;
+
+SELECT *,
+	CASE booth_type
+		WHEN 'Standard' THEN 1
+        ELSE 0 -- CASE STATEMENT IS A NEW COLLLUM
+	END AS is_standard
+FROM booth;
+
+SELECT *
+FROM product_category;
+
+SELECT product_category_name,
+	CASE
+		WHEN product_category_name LIKE '%fresh%' THEN 'Fresh'
+		WHEN product_category_name LIKE '%packaged%' THEN 'Packaged'
+        -- MISSED STUFF FROM LECTURE
+        ELSE 'Non-Edible'
+        -- ELSE procuct_category_name
+	END
+FROM product_category;
+
+SELECT DISTINCT cost_to_customer_per_quy
+FROM customer_purchases
+ORDER BY cost_to_customer_per_gty;
+-- 'Low-end <= 1, 'MID-RANGE' > 1 AND <5, High-end > 5
+SELECT *,
+	CASE
+		WHEN cost_to_customer_per_qty <= 1 THEN 'Low-end'
+        WHEN cost_to_customer_per_qty BETWEEN 1 AND 5 THEN 'MID RANGE'
+        WHEN cost_to_customer_per_qty >= 5 THEN 'High-End'
+    END
+FROM customer_purchases;
+
+-- IF() function
+SELECT *,
+	IF(quantity > (SELECT AVG(quantity) FROM customer_purchases), 'Large Purchases', 'Normal Purchase') AS purchase_type
+FROM customer_purchases;
+
+-- Rewritting a SIMPLE case as an if
+SELECT *,
+	CASE booth_type
+		WHEN 'Standard' THEN 1
+        ELSE 0 -- CASE STATEMENT IS A NEW COLLLUM
+	END AS is_standard
+FROM booth;
+
+SELECT *,
+	IF(booth_type = 'Standard', 1, 0)
+FROM booth;
+
+-- Pivot Table
+-- need info from booth and vendors but need a joiner table
+SELECT vendor_name,
+	COUNT(CASE WHEN booth_type = 'Standard' THEN booth_type ELSE NULL END) AS 'Standard',
+    COUNT(CASE WHEN booth_type = 'Large' THEN booth_type ELSE NULL END) AS 'Large',
+    COUNT(CASE WHEN booth_type = 'Small' THEN booth_type ELSE NULL END) AS 'Small'
+FROM vendor_booth_assignments vba
+JOIN vendor v USING (vendor_id) -- USING FOR WHEN JOINING ON A COMMON COLUMN NAME
+JOIN booth b USING (booth_number)
+GROUP BY vendor_name; -- since using aggregates group by non-aggregates
+
+SELECT vendor_name,
+	COUNT(CASE WHEN booth_type = 'Standard' THEN booth_type ELSE NULL END) AS 'Standard',
+    
+       COUNT(CASE WHEN booth_type = 'Large' THEN booth_type ELSE NULL END) AS 'Large',
+    COUNT(CASE WHEN booth_type = 'Small' THEN booth_type ELSE NULL END) AS 'Small'
+FROM vendor_booth_assignments vba
+JOIN vendor v ON v.vendor_id = vba.vendor_id AND v.vendor_type LIKE '%fresh%' -- USING FOR WHEN JOINING ON A COMMON COLUMN NAME
+JOIN booth b USING (booth_number)
+GROUP BY vendor_name; -- since using aggregates group by non-aggregates
