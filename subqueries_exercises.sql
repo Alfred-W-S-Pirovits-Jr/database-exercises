@@ -37,21 +37,21 @@ FROM
 JOIN titles ON am.emp_no = titles.emp_no
 WHERE titles.to_date LIKE '9999-01-01';
 
--- 3.  GET BACK TO IT
-SELECT * 
+-- 3.  GET BACK TO IT. 59900 -- How many people in the employees table are no longer working for the company? Give the answer in a comment in your code.
+SELECT COUNT(*) 
 FROM employees;
 
 SELECT COUNT(*)-- (DISTINCT emp_no) -- NOW() BETTER THAN NOT LIKE '9%'
 FROM salaries
-WHERE to_date < NOW();  -- no subquery needed
+WHERE to_date > NOW();  -- no subquery needed
 
-SELECT COUNT(*)
+SELECT COUNT(DISTINCT(employees.emp_no)) - COUNT(DISTINCT(s.emp_no)) -- RIGHT JOIN PRACTICE also discovered don't need nother subquery in select statement
 FROM (
 		SELECT emp_no-- (DISTINCT emp_no) -- NOW() BETTER THAN NOT LIKE '9%'
 		FROM salaries
-		WHERE to_date < NOW()
-		)as s
-JOIN employees ON s.emp_no = employees.emp_no;
+		WHERE to_date >  NOW()
+		) AS s
+RIGHT JOIN employees ON s.emp_no = employees.emp_no;
 
 DESCRIBE salaries;
 
@@ -82,7 +82,51 @@ JOIN (
 						FROM salaries) AND salaries.to_date = '9999-01-01'
 	 ) AS s ON e.emp_no = s.emp_no;
      
-     -- 6.  > (MAX(salary)-STDDEV(salary))
-     SELECT emp_no -- STDDEV(salary), AVG(salary), MAX(salary)
-     FROM salaries
-     WHERE salary > (MAX(salary) - STDDEV(salary));
+     -- 6.  > (MAX(salary)-STDDEV(salary)) 
+/* How many current salaries are within 1 standard deviation of the current highest salary?
+(Hint: you can use a built in function to calculate the standard deviation.) What percentage of all salaries is this?
+
+Hint You will likely use multiple subqueries in a variety of ways
+Hint It's a good practice to write out all of the small queries that you can. Add a comment above the query showing the number of rows returned. 
+You will use this number (or the query that produced it) in other, larger queries. */
+
+SELECT COUNT(*)
+FROM salaries
+WHERE salary > (
+					SELECT MAX(salary) - STDDEV(salary) -- CURRENT MAX MINUS STANDARD DEVIATION
+					FROM salaries
+					WHERE to_date > NOW()
+				) AND to_date > NOW();
+                
+-- BONUS
+
+-- 1.  Departments with female managers between department manager and employees
+-- subquery on Female capture the department numbers
+SELECT emp_no
+FROM (
+		SELECT emp_no
+		FROM dept_manager
+		WHERE to_date > now()
+		) AS dm
+JOIN employees e ON dm.emp_no = e.emp_no
+WHERE e.gender = 'F';
+
+-- LEFT JOIN department d ON dm.emp_no = d.emp_no;
+        
+        
+        /*AND 
+    	
+		SELECT emp_no
+		FROM employees.employees
+		WHERE gender = 'F'
+	);*/
+	  
+SELECT emp_no
+FROM employees.employees
+WHERE gender = 'F';
+
+describe dept_manager;
+SHOW TABLES;
+                
+
+
