@@ -98,6 +98,32 @@ WHERE salary > (
 					WHERE to_date > NOW()
 				) AND to_date > NOW();
                 
+SELECT COUNT(*)
+FROM salaries
+WHERE to_date > NOW();
+
+-- Combine into one table
+
+SELECT (SELECT COUNT(*)
+			FROM salaries
+			WHERE salary > (
+					SELECT MAX(salary) - STDDEV(salary) -- CURRENT MAX MINUS STANDARD DEVIATION
+					FROM salaries
+					WHERE to_date > NOW()
+		) AND to_date > NOW()) AS number_of_current_employees, 
+        
+		((SELECT COUNT(*)
+			FROM salaries
+			WHERE salary > (
+					SELECT MAX(salary) - STDDEV(salary) -- CURRENT MAX MINUS STANDARD DEVIATION
+					FROM salaries
+					WHERE to_date > NOW()
+		) AND to_date > NOW()) / (SELECT COUNT(*)
+										FROM salaries
+										WHERE to_date > NOW()) * 100) AS percent_of_current_employees
+										FROM salaries
+										LIMIT 1;
+
 -- BONUS
 
 -- 1.  Departments with female managers between department manager and employees
