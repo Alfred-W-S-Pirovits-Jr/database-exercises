@@ -48,7 +48,7 @@ SELECT
 	END AS decade_born, COUNT(*)
 FROM employees
 GROUP BY decade_born;
-SELECT SUBSTR("Data Scienterrific", 10, LENGTH("Data Scienterrific"));
+
 -- 4.  
 -- SELECT dept_group, salary
 -- FROM (
