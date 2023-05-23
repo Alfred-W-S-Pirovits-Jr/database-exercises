@@ -64,31 +64,21 @@ payments;
 
 USE employees;
 
-/*
-	SELECT 
-		CASE
-			WHEN dept_name IN ('research', 'development') THEN 'R&D'
-			WHEN dept_name IN ('sales', 'marketing') THEN 'Sales & Marketing'
-			WHEN dept_name IN ('Production', 'Quality Management') THEN 'Prod & QM'
-		ELSE dept_name
-	END AS dept_group, AVG(salary)
-	FROM departments AS a
-    -- JOIN departments ON departments.dept_name = a.dept_name
-    JOIN dept_emp ON a.dept_no = dept_emp.dept_no
-    JOIN salaries USING (emp_no)
-    WHERE salaries.to_date > NOW()
-    GROUP BY dept_group;	SELECT 
-		CASE
-			WHEN dept_name IN ('research', 'development') THEN 'R&D'
-			WHEN dept_name IN ('sales', 'marketing') THEN 'Sales & Marketing'
-			WHEN dept_name IN ('Production', 'Quality Management') THEN 'Prod & QM'
-		ELSE dept_name
-	END AS dept_group, AVG(salary)
-	FROM departments AS a
-    -- JOIN departments ON departments.dept_name = a.dept_name
-    JOIN dept_emp ON a.dept_no = dept_emp.dept_no
-    JOIN salaries USING (emp_no)
-    WHERE salaries.to_date > NOW()
-    GROUP BY dept_group;
+USE employees;
 
-*/
+-- access denied so im using another way
+-- otherwise I would add a column as in number 2
+
+SELECT d.dept_name, AVG(s.salary), (AVG(s.salary) - (SELECT AVG(salary) FROM salaries where to_date > now()))
+        /
+        (SELECT stddev(salary) FROM salaries where to_date > now()) AS zscore
+FROM departments d
+JOIN dept_emp de
+ON d.dept_no = de.dept_no
+JOIN salaries s
+ON de.emp_no = s.emp_no
+WHERE de.to_date > NOW()
+GROUP BY d.dept_name
+ORDER BY AVG(s.salary) DESC;
+
+-- the best department to work for is Sales
